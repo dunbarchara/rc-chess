@@ -15,7 +15,8 @@
     "start": "npm run start -w backend",
     "test": "npm run test --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "lint": "oxlint backend/src frontend/src"
+    "lint": "oxlint backend/src frontend/src",
+    "lint:fix": "oxlint --fix backend/src frontend/src"
   },
   "devDependencies": {
     "concurrently": "^10.0.6",

@@ -29,7 +29,7 @@ export default function Home() {
           </div>
         ))}
       </div>
-      <Board boardState={boardState}  />
+      <Board boardState={boardState} />
     </main>
   );
 }
