@@ -1,0 +1,47 @@
+# Run `pre-commit install` once after cloning to activate these hooks locally.
+# CI runs `pre-commit run --all-files` on every PR, so `git commit --no-verify` is caught there.
+
+repos:
+  # Secret scanning: blocks commits containing API keys, tokens, or credentials.
+  # The only layer that stops secrets entering git history at all.
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      # On a commit this scans only what is staged (the hook's own `--staged`).
+      - id: gitleaks
+      # The same scanner over every commit on every branch, which the hook above does not do.
+      # CI runs it (`pre-commit run gitleaks-history --hook-stage manual --all-files`); locally,
+      # run the same line before making the repo public or after a scare.
+      - id: gitleaks
+        alias: gitleaks-history
+        name: Detect hardcoded secrets (full history)
+        entry: gitleaks git --redact --verbose --log-opts=--all
+        stages: [manual]
+
+  # Standard hygiene hooks.
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+        exclude: ^(backend|frontend)/tsconfig.*\.json$ # JSONC (comments)
+
+  # Files that must never be committed, whatever their content: real env files, the database,
+  # and uploaded photos. .gitignore already covers these; this catches `git add -f`.
+  - repo: local
+    hooks:
+      - id: no-local-data
+        name: no env files, databases or uploads
+        language: fail
+        entry: These are local or private data and must never be committed. Unstage them.
+        files: (^|/)(\.env(\.(?!example$).+)?|data/.*|uploads/.*|.*\.(db|db-shm|db-wal|sqlite|sqlite3|pem|key))$
+
+exclude: |
+  (?x)^(
+    .*package-lock\.json
+  )$

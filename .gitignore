@@ -1,0 +1,18 @@
+node_modules/
+dist/
+coverage/
+
+# local config and secrets
+.env
+.env.*
+!.env.example
+
+# editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# keys and certificates
+*.pem
+*.key
