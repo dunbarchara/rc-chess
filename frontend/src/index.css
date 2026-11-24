@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+table {
+  border: 1px solid #888;
+}
+
 td {
     width: 80px;
     height: 80px;
