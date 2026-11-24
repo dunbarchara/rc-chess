@@ -1,14 +1,20 @@
 import { createApp } from './app.js';
 import { loadConfig } from './config.js';
+import { Hub } from './hub.js';
+import { attachWebSocket } from './ws.js';
 
 const config = loadConfig();
 const server = createApp({ isProd: config.isProd }).listen(config.port, () => {
   console.log(`rc-chess listening on :${config.port} (${config.isProd ? 'production' : 'development'})`);
 });
+const wss = attachWebSocket(server, new Hub());
 
 // Disco stops the old container with SIGTERM on every deploy.
 function shutdown(signal: string): void {
   console.log(`${signal} received, shutting down`);
+  // Websockets never go idle, so server.close() would wait forever without this.
+  for (const client of wss.clients) client.terminate();
+  wss.close();
   server.close(() => process.exit(0));
   setTimeout(() => process.exit(1), 10_000).unref();
 }
