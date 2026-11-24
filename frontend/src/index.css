@@ -1,11 +1,16 @@
 @import "tailwindcss";
 
+body {
+  background: #eee;
+}
+
 #root {
   margin: 3em;
 }
 
 table {
   border: 1px solid #888;
+  cursor: pointer;
 }
 
 td {
@@ -14,6 +19,7 @@ td {
     font-size: 60px;
     text-align: center;
     user-select: none;
+    background: #fff;
 }
 
 tr:nth-child(even) td:nth-child(odd),
