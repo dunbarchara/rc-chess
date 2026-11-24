@@ -29,6 +29,6 @@ function boardRow(row: (PieceKind | undefined)[]) {
 
 function boardPiece(piece: (PieceKind | undefined)) {
   return <td>
-    {piece ? <Piece piece={piece}></Piece> : undefined}
+    {piece !== undefined ? <Piece piece={piece}></Piece> : undefined}
   </td>;
 }
