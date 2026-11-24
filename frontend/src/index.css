@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+#root {
+  margin: 3em;
+}
+
 table {
   border: 1px solid #888;
 }
