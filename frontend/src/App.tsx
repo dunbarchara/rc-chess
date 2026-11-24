@@ -1,3 +1,3 @@
 export default function App() {
-  return <h1 className="p-6 text-2xl font-bold">RC Chess</h1>;
+  return <h1 className="p-6 text-2xl font-bold">RC Chess - Test Disco</h1>;
 }
