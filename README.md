@@ -7,12 +7,7 @@ Crowd chess for RC: teams propose moves and the most popular one is played.
 
 ## Realtime
 
-Single global game over a websocket at `/api/ws`. Connections are anonymous; each gets an incrementing id, and a reconnect is a new connection (the old one's vote stops counting).
-
-- Client → server: `{type:'join', team:'white'|'black'}`, `{type:'vote', option:string}` (one live vote per connection; voting again replaces it).
-- Server → client: `{type:'welcome', connId, state}` on connect, then `{type:'state', state}` on every change. `state` is `{teams:{white,black}, votes:{white:{option:count}, black:{...}}}`.
-- `/` shows join QR codes and buttons; `/join/white` and `/join/black` are the player pages.
-- Vote options are opaque strings. Game rules and proposal logic live elsewhere.
+Websocket at `/api/ws`. Connections are anonymous and a reconnect counts as a new one. Clients send `{type:'join', team:'white'|'black'}` and `{type:'vote', option:string}` (voting again replaces the previous vote); the server broadcasts `{type:'state', state:{teams, votes}}` on every change. `/` has the join QR codes; `/join/white` and `/join/black` are the player pages.
 
 ## Develop
 
