@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+td {
+    width: 80px;
+    height: 80px;
+    font-size: 60px;
+    text-align: center;
+    user-select: none;
+}
+
+tr:nth-child(even) td:nth-child(odd),
+tr:nth-child(odd) td:nth-child(even) {
+    background: #ccc;
+}
