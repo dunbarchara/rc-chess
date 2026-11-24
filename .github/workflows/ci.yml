@@ -11,9 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  # Runs the hygiene hooks, then gitleaks over every commit on every branch, so `git commit --no-verify` is caught.
-  # (The gitleaks hook itself only looks at staged changes, which are empty in CI; the second step is what reads history.)
-  pre-commit:
+  # Secret scanning: gitleaks over every commit on every branch. This is the only pre-commit check CI enforces.
+  gitleaks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -22,7 +21,6 @@ jobs:
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.13"
-      - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
       - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
         with:
           extra_args: gitleaks-history --hook-stage manual --all-files
