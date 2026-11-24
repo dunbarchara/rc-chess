@@ -1,4 +1,4 @@
-use anyhow::{Result, bail, ensure};
+use anyhow::{Result, anyhow, bail, ensure};
 
 use crate::bitboard::Bitboard;
 
@@ -16,7 +16,7 @@ struct Board {
 
 impl Board {
     fn print(&self) {
-        println!("\n   a b c d e f g h");
+        println!("\n   a b c d e f g h\n");
 
         for rank in (0..8).rev() {
             print!("{}  ", rank + 1);
@@ -37,7 +37,7 @@ impl Board {
             println!();
         }
 
-        println!("   a b c d e f g h");
+        println!("\n   a b c d e f g h\n");
     }
 }
 
@@ -68,28 +68,30 @@ impl Default for Move {
     }
 }
 
-impl<'a> From<&'a str> for Move {
-    fn from(value: &'a str) -> Self {
+impl<'a> TryFrom<&'a str> for Move {
+    type Error = anyhow::Error;
+
+    fn try_from(value: &'a str) -> Result<Self> {
         // how do we parse into a move
         let mut parts = value.split_ascii_whitespace();
-        let start = parts.next().unwrap();
-        let mut end = parts.next().unwrap();
+        let start = parts.next().ok_or_else(|| anyhow!("expected start"))?;
+        let mut end = parts.next().ok_or_else(|| anyhow!("expected end"))?;
         let is_take = end == "take";
         if is_take {
-            end = parts.next().unwrap();
+            end = parts.next().ok_or_else(|| anyhow!("expected end"))?;
         }
 
-        Move {
+        Ok(Move {
             is_take,
             start_position: Move::to_position(start),
             end_position: Move::to_position(end),
-        }
+        })
     }
 }
 
 impl Board {
     fn make_move(&mut self, chess_move: &str) -> Result<()> {
-        let next_move = Move::from(chess_move);
+        let next_move = Move::try_from(chess_move)?;
 
         let Move {
             is_take,
@@ -113,10 +115,10 @@ impl Board {
                 ensure!(start_rank > end_rank, "black can't go backwards");
             }
 
-            ensure!(
-                (end_position & (self.black | self.white)).0 == 0,
-                "can't go to an occupied position"
-            );
+            // ensure!(
+            //     (end_position & (self.black | self.white)).0 == 0,
+            //     "can't go to an occupied position"
+            // );
 
             // you must be jumping from a valid square
             let side = if self.white_turn {
@@ -320,7 +322,7 @@ mod tests {
 
     #[test]
     fn from_parses_simple_move() {
-        let m = Move::from("e2 e4");
+        let m = Move::try_from("e2 e4").unwrap();
         assert!(!m.is_take);
         assert_eq!(Move::to_position("e2"), m.start_position);
         assert_eq!(m.end_position, Move::to_position("e4"));
@@ -328,7 +330,7 @@ mod tests {
 
     #[test]
     fn from_parses_take_move() {
-        let m = Move::from("e4 take d5");
+        let m = Move::try_from("e4 take d5").unwrap();
         assert!(m.is_take);
         assert_eq!(m.start_position, Move::to_position("e4"));
         assert_eq!(m.end_position, Move::to_position("d5"));
