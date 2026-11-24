@@ -12,10 +12,11 @@ import Piece from "./Piece";
 
 type BoardProps = {
   boardState: (PieceKind | undefined)[][]
+  containerStyles?: string;
 };
 
-export default function Board({ boardState }: BoardProps) {
-  return <table>
+export default function Board({ boardState, containerStyles }: BoardProps) {
+  return <table className={`${containerStyles}`}>
     {boardState.map(boardRow)}
   </table>;
 }

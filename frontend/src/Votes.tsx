@@ -4,14 +4,16 @@ type Vote = {
 }
 
 type VotesProps = {
-  votes: Vote[]
+  votes: Vote[];
+  containerStyles?: string;
 }
 
-export default function Votes({ votes }: VotesProps) {
-  return <table className="table-auto">
+
+export default function Votes({ votes, containerStyles }: VotesProps) {
+  return <table className={`table-auto ${containerStyles}`}>
     <th>Move</th>
     <th>Votes</th>
-    {votes.sort((a, b) => a.votes - b.votes).map((vote) => (
+    {votes.sort((a, b) => b.votes - a.votes).map((vote) => (
       <tr>
         <td>{vote.move}</td>
         <td>{vote.votes}</td>

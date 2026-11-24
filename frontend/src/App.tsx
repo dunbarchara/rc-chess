@@ -18,8 +18,8 @@ export default function App() {
     [PieceKind.WhiteRook, PieceKind.WhiteKnight, PieceKind.WhiteBishop, PieceKind.WhiteQueen, PieceKind.WhiteKing, PieceKind.WhiteBishop, PieceKind.WhiteKnight, PieceKind.WhiteRook],
   ];
 
-  return <>
+  return <div className="flex flex-row items-start">
     <Board boardState={boardState} />
-    <Votes votes={testVotes} />
-  </>
+    <Votes votes={testVotes} containerStyles="mx-12" />
+  </div>
 }
