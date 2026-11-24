@@ -1,9 +1,11 @@
 import Board from "./Board";
 import Votes from "./Votes";
+import Rust from "./Rust";
 import { PieceKind } from "./types";
 // const team = /^\/join\/(white|black)$/.exec(window.location.pathname)?.[1];
 // return team ? <Join team={team} /> : <Home />;
 export default function App() {
+  if (window.location.pathname === "/rust") return <Rust />;
 
   const testVotes = [{ votes: 5, move: "E4" }, { votes: 7, move: "D4" },]
 
