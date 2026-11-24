@@ -14,16 +14,24 @@ RUN npm run build
 RUN npm prune --omit=dev
 
 
+# ---- engine: build the Rust chess binary ----
+FROM rust:1-bookworm AS engine
+WORKDIR /engine
+COPY engine/ .
+RUN cargo build --release --locked
+
+
 # ---- runtime ----
 FROM node:26-bookworm-slim
 WORKDIR /app
-ENV NODE_ENV=production PORT=3000
+ENV NODE_ENV=production PORT=3000 RUST_ENGINE_BIN=/app/chess
 
 COPY --from=build /app/node_modules node_modules
 COPY --from=build /app/package.json ./
 COPY --from=build /app/backend/package.json backend/
 COPY --from=build /app/backend/dist backend/dist
 COPY --from=build /app/frontend/dist frontend/dist
+COPY --from=engine /engine/target/release/chess /app/chess
 
 USER node
 EXPOSE 3000
