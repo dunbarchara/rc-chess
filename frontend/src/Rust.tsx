@@ -21,21 +21,6 @@ function Colored({ text }: { text: string }) {
   );
 }
 
-// The engine prints any error message first, then the 8 board rows.
-function Board({ rows }: { rows: string[] }) {
-  return (
-    <pre className="font-mono">
-      <div className="border-b pl-[2ch]">a b c d e f g h</div>
-      {rows.map((row, i) => (
-        <div key={i}>
-          <span className="inline-block w-[2ch] border-r">{8 - i}</span>
-          <Colored text={row} />
-        </div>
-      ))}
-    </pre>
-  );
-}
-
 export default function Rust() {
   const [output, setOutput] = useState('');
   const [move, setMove] = useState('');
@@ -57,14 +42,16 @@ export default function Rust() {
     setMove('');
   };
 
-  const lines = output.trimEnd().split('\n');
-  const hasBoard = lines.length >= 8;
-  const rows = hasBoard ? lines.slice(-8) : [];
-  const message = hasBoard ? lines.slice(0, -8).join('\n') : output;
+  // The engine prints any error message first, then the labelled board (starting at its header line).
+  const boardStart = output.indexOf('   a b c d e f g h');
+  const board = boardStart < 0 ? '' : output.slice(boardStart).trimEnd();
+  const message = (boardStart < 0 ? output : output.slice(0, boardStart)).trim();
 
   return (
     <main className="p-6">
-      <Board rows={rows} />
+      <pre className="font-mono">
+        <Colored text={board} />
+      </pre>
       <form onSubmit={submit} className="mt-4 flex gap-2">
         <input
           value={move}
